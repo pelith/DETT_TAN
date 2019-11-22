@@ -132,7 +132,7 @@ class LoginDialog {
       this.toggleDescStatus(this.target.find('.wrapper--injected'), false)
       this.optInjected.attr('disabled', true)
       this.target.find('.--injectedProviderStatus').text('未偵測到錢包')
-      this.target.find('.wrapper--injected .desc-err').text('請先安裝 MetaMask 或是 手機錢包 開啟')
+      this.target.find('.wrapper--injected .desc-err').text('請先安裝 Tangerine Wallet 或是 手機錢包 開啟')
     }
   }
 
@@ -155,7 +155,7 @@ class LoginDialog {
               this.target.find('.wrapper--injected .desc-err').text('你已拒絕錢包連線，請再次登入')
             } else if (error.code === 'UNSUPPORTED_NETWORK') {
               this.target.find('.--injectedProviderStatus').text('錯誤的網路')
-              this.target.find('.wrapper--injected .desc-err').text('請打開錢包，並切換到 乙太坊 主網路')
+              this.target.find('.wrapper--injected .desc-err').text('請打開錢包，並切換到 Tangerine 主網路')
             }
           }
 

@@ -92,12 +92,11 @@ class Article extends PostBase {
 
   async initEdits(edits) {
     for ( let edit of edits ){
-      const _transaction = await rWeb3.eth.getTransaction(edit.transactionHash)
-      if (_transaction.from === this.author) {
+      if (edit.returnValues.author === this.author) {
         this.rawContent = edit.returnValues.content
         this.title = this.getTitle()
         this.content = this.getContent()
-        let block = await rWeb3.eth.getBlock(edit.blockNumber)
+        const block = await rWeb3.eth.getBlock(edit.blockNumber)
         this.editTimestamps.push(block.timestamp)
       }
     }
@@ -391,14 +390,6 @@ class Dett extends EventEmitter {
     }
     
     return this.wWeb3.eth.sendTransaction(txObj)
-  }
-
-  isDettTx(tx){
-    console.log(tx)
-    console.log(CONTRACT[NETWORKID].BBS)
-    return [CONTRACT[NETWORKID].BBS]
-            .map(x => x.toLowerCase())
-            .includes(tx.toLowerCase())
   }
 
   confirmTx(txObj) {

@@ -1,9 +1,9 @@
-const canonicalUrl = 'https://tangerine.dett.cc'
+const canonicalUrl = 'https://tan.dett.cc'
 
 module.exports = {
   root: './src',
   data: {
-    title: 'DETT Tangerine',
+    title: 'DETT BBS',
     description: '基於 Tangerine 智慧合約的 BBS 系統' ,
     canonicalUrl,
   },
