@@ -1,0 +1,25 @@
+'use strict';
+
+const path = require('path');
+const Bundler = require('parcel-bundler');
+const { execSync } = require('child_process');
+
+(async () => {
+  const entryFiles = [
+    path.join('src/__dev__.html')
+  ];
+
+  const options = {
+    watch: true,
+    outDir: './dist',
+    publicUrl: '/',
+  };
+
+  const bundler = new Bundler(entryFiles, options);
+  bundler.serve();
+  await bundler.bundle();
+})();
+
+process.once('SIGINT', () => {
+    process.exit(0);
+});

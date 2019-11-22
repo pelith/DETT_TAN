@@ -1,0 +1,48 @@
+{
+  "name": "DETT",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "clean:all": "npm run clean && npm run clean:cache && npm run clean:build",
+    "clean:cache": "rm -rf .cache",
+    "clean:build": "rm -rf build",
+    "dev": "npm run clean && node bin/dev",
+    "build": "npm run clean:build && parcel build --no-source-maps src/*.njk --out-dir build/ --public-url /",
+    "deploy-prep": "bin/before-deploy.sh",
+    "deploy": "bin/deploy.sh",
+    "deploy:test": "npm run deploy-prep && test",
+    "deploy:ci": "npm run deploy-prep && ci"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.6.0",
+    "@babel/plugin-transform-runtime": "^7.6.0",
+    "gh-pages": "^2.1.1",
+    "parcel-bundler": "^1.12.3",
+    "sass": "^1.23.0-module.beta.1"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.4.4",
+    "bip39": "^3.0.2",
+    "bootstrap": "^4.3.1",
+    "core-js": "^2.6.5",
+    "ed25519-hd-key": "^1.0.0",
+    "ethereumjs-wallet": "^0.6.3",
+    "js-sha256": "^0.9.0",
+    "linkify-it": "^2.1.0",
+    "nunjucks": "^3.0.0",
+    "parcel-plugin-nunjucks": "^1.1.0",
+    "popper.js": "^1.15.0",
+    "url-parse": "^1.4.7"
+  },
+  "browserslist": [
+    ">0.25%",
+    "ie 11",
+    "not op_mini all"
+  ],
+  "engines": {
+    "node": "^10.16.0",
+    "npm": "^6.10.3"
+  }
+}
