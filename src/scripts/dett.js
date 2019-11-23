@@ -319,9 +319,8 @@ class Dett extends EventEmitter {
         .on('confirmation', (confirmationNumber, receipt) => {
           window.location.reload()
         })
-      }
-      catch(err){
-        alert(err)
+      } catch(e) {
+        console.log(e)
       }
     }
   }

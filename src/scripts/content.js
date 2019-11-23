@@ -164,9 +164,9 @@ const renderArticle = (article, isPreRendered) => {
   document.title = article.title + ' - Gossiping - DETT BBS'
 
   const authorLink = $('<a class="--link-to-addr hover" target="_blank"></a>')
-                    .text(parseUser(article.origAuthor, article.authorMeta))
-                    .attr('data-address', `${article.origAuthor}`)
-                    .attr('href', 'https://extdev-blockexplorer.dappchains.com/address/' + article.transaction.from)
+                    .text(parseUser(article.author, article.authorMeta))
+                    .attr('data-address', `${article.parseUser}`)
+                    .attr('href', 'https://tangerine.garden/address/' + article.transaction.from)
 
   $('#main-content-author').empty().append(authorLink)
 
@@ -192,14 +192,14 @@ const renderArticle = (article, isPreRendered) => {
   $('#main-content-href').attr('href', permalink)
   $('#main-content-href').text(permalink)
   $('#main-content-from').text('@'+article.transaction.blockNumber)
-  $('#main-content-from').attr('href', 'https://extdev-blockexplorer.dappchains.com/tx/'+tx)
+  $('#main-content-from').attr('href', 'https://tangerine.garden/address/tx/'+tx)
 
 
   for (let timestamp of article.editTimestamps){
     const date = new Date(timestamp)
     const formatDate = (date.getMonth()+1)+'/'+(''+date.getDate()).padStart(2, '0')+'/'+date.getFullYear()+' '+(''+date.getHours()).padStart(2, '0')+':'+(''+date.getMinutes()).padStart(2, '0')+':'+(''+date.getSeconds()).padStart(2, '0')
 
-    const elem = $(`<span class="f2">※ 編輯: ${parseUser(article.origAuthor, article.authorMeta)}, ${formatDate}</span><br>`)
+    const elem = $(`<span class="f2">※ 編輯: ${parseUser(article.author, article.authorMeta)}, ${formatDate}</span><br>`)
     $('.edit').append(elem)
   }
 
