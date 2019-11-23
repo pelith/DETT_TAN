@@ -134,7 +134,7 @@ class Comment extends PostBase {
     ])
 
     this.block = block
-    this.timestamp = this.block.timestamp * 1e3
+    this.timestamp = this.block.timestamp
     this.authorMeta = authorMeta
   }
 

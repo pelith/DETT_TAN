@@ -166,7 +166,7 @@ const renderArticle = (article, isPreRendered) => {
   const authorLink = $('<a class="--link-to-addr hover" target="_blank"></a>')
                     .text(parseUser(article.author, article.authorMeta))
                     .attr('data-address', `${article.parseUser}`)
-                    .attr('href', 'https://tangerine.garden/address/' + article.transaction.from)
+                    .attr('href', 'https://tangerine.garden/address/' + article.author)
 
   $('#main-content-author').empty().append(authorLink)
 
