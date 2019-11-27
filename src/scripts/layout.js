@@ -46,12 +46,12 @@ const hotkey = () => {
 
 const listmode = () => {
   if(!window.localStorage.getItem('list-mode')) window.localStorage.setItem('list-mode', 1)
-  $('.list-mode').text( +window.localStorage.getItem('list-mode') ? "最新在上" : "最新在下")
+  $('.list-mode').text( +window.localStorage.getItem('list-mode') ? "最新在下" : "最新在上")
 
   $('.list-mode-btn').click(() => {
     const listMode = +window.localStorage.getItem('list-mode')
     window.localStorage.setItem('list-mode', +!listMode)
-    $('.list-mode').text( +window.localStorage.getItem('list-mode') ? "最新在上" : "最新在下")
+    $('.list-mode').text( +window.localStorage.getItem('list-mode') ? "最新在下" : "最新在上")
     window.location.reload()
   })
 }
@@ -385,7 +385,7 @@ window._layoutInit = async () => {
 
   hotkey()
   listmode()
-  
+
   attachDropdown()
 
   // for parcel debug use
