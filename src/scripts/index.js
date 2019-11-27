@@ -83,15 +83,20 @@ const main = async (_dett) => {
 
   // console.log(articles)
 
+  const listMode = +window.localStorage.getItem('list-mode')
+
+  articles = listMode ? articles.reverse() : articles
   await articles.reduce( async (n,p) => {
     await n
     directDisplay(...await p)
   }, Promise.resolve())
 
   // temporary fix announcement
-  if (addAnnouncement){
-    $('.r-list-container.action-bar-margin.bbs-screen').append($('<div class="r-list-sep"></div>'))
-    displayAnnouncement('[公告] DETT 使用教學', 'about'+(dev?'.html':''), 'Admin')
+  if (addAnnouncement) {
+    const bbsSreen = $('.r-list-container.action-bar-margin.bbs-screen')
+    const listSep = $('<div class="r-list-sep"></div>')
+    listMode ? bbsSreen.prepend(listSep) : bbsSreen.append(listSep)
+    displayAnnouncement('[公告] DETT 使用教學', 'about' + (dev ? '.html' : ''), 'Admin', listMode)
   }
 
   if (dett.account) {
@@ -276,7 +281,7 @@ const directDisplay = (article, votes, banned) => {
   }
 }
 
-const displayAnnouncement = (title, href, author) => {
+const displayAnnouncement = (title, href, author, listMode) => {
   const elem = $('<div class="r-ent"></div>')
   elem.html(
     `<div class="nrec"></div>
@@ -292,8 +297,9 @@ const displayAnnouncement = (title, href, author) => {
         </a>
       </div>
     </div>`)
-
-  $('.r-list-container.action-bar-margin.bbs-screen').append(elem)
+  
+  const bbsSreen = $('.r-list-container.action-bar-margin.bbs-screen')
+  listMode ? bbsSreen.prepend(elem) : bbsSreen.append(elem)
 }
 
 
