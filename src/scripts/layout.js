@@ -6,15 +6,18 @@ import { parseUser } from './utils.js'
 import { NETWORK, RPC_NETWORK } from './constant'
 
 const NETWORKID = NETWORK.MAINNET
+
+// import Web3Provider from 'web3-vanilla/lib/index'
+// import { Connectors } from 'web3-vanilla/lib/index'
+// const { NetworkOnlyConnector, PrivateKeyConnector } = Connectors
 const Web3Provider = Web3Vanilla.Web3Provider
 const { NetworkOnlyConnector, PrivateKeyConnector } = Web3Vanilla.Connectors
 import InjectedConnector from './lib/tangerineInjectedConnector'
 
 let dett = null
-let account = ''
 
-window.wWeb3 = null
 let wWeb3Provider = null
+let rWeb3Provider = null
 
 const attachDropdown = () => {
   $('.user-menu > .trigger').click((e) => {
@@ -41,8 +44,20 @@ const hotkey = () => {
   })
 }
 
+const listmode = () => {
+  if(!window.localStorage.getItem('list-mode')) window.localStorage.setItem('list-mode', 1)
+  $('.list-mode').text( +window.localStorage.getItem('list-mode') ? "最新在上" : "最新在下")
+
+  $('.list-mode-btn').click(() => {
+    const listMode = +window.localStorage.getItem('list-mode')
+    window.localStorage.setItem('list-mode', +!listMode)
+    $('.list-mode').text( +window.localStorage.getItem('list-mode') ? "最新在上" : "最新在下")
+    window.location.reload()
+  })
+}
+
 const renderTopbar = async (_account) => {
-  if (_account){
+  if (_account) {
     const addrDisp = parseUser(_account)
     const nickname = await dett.getMetaByAddress(_account)
     if (nickname.name) {
@@ -90,7 +105,6 @@ class LoginDialog {
   init() {
     this.initInjectedWallet()
     this.initPrivateKeyWallet()
-
 
     // PrivateKey
     $('#commitSeedPhrase').click(() => {
@@ -169,7 +183,6 @@ class LoginDialog {
             // remove useless onceError
             this.injectedWeb3Provider.event.removeAllListeners()
 
-            wWeb3 = this.injectedWeb3Provider.library
             wWeb3Provider = this.injectedWeb3Provider
 
             dett.account = wWeb3Provider.account
@@ -216,18 +229,22 @@ class LoginDialog {
           web3Api: Web3,
         })
 
+        this.privateKeyWeb3Provider.event.on('error', (error) => {
+          console.log(error)
+        })
+
         await this.privateKeyWeb3Provider.setConnector('PrivateKey')
-        wWeb3 = this.privateKeyWeb3Provider.library
         wWeb3Provider = this.privateKeyWeb3Provider
 
         dett.account = wWeb3Provider.account
+
         renderTopbar(wWeb3Provider.account)
         await dett.initWWeb3Provider(wWeb3Provider)
+
         this.bbsLoginButton.prop('disabled', false)
         this.close()
         break
       case 'vistor':
-        wWeb3 = null
         wWeb3Provider = null
 
         if (this.injectedWeb3Provider) {
@@ -332,7 +349,7 @@ class LoginDialog {
   }
 }
 
-const initRWeb3 = async () => {
+const initRWeb3Provider = async () => {
   const Tangerine = new NetworkOnlyConnector({
     supportedNetworkURLs: RPC_NETWORK,
     defaultNetwork: NETWORK.MAINNET,
@@ -351,7 +368,7 @@ const initRWeb3 = async () => {
 }
 
 window._layoutInit = async () => {
-  const rWeb3Provider = await initRWeb3()
+  rWeb3Provider = await initRWeb3Provider()
 
   dett = new Dett()
   await dett.initRWeb3Provider(rWeb3Provider)
@@ -367,7 +384,8 @@ window._layoutInit = async () => {
   }
 
   hotkey()
-
+  listmode()
+  
   attachDropdown()
 
   // for parcel debug use

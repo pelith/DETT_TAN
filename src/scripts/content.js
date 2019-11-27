@@ -162,10 +162,9 @@ const keyboardHook = () => {
 
 const renderArticle = (article, isPreRendered) => {
   document.title = article.title + ' - Gossiping - DETT BBS'
-
   const authorLink = $('<a class="--link-to-addr hover" target="_blank"></a>')
                     .text(parseUser(article.author, article.authorMeta))
-                    .attr('data-address', `${article.parseUser}`)
+                    .attr('data-address', `${article.author}`)
                     .attr('href', 'https://tangerine.garden/address/' + article.author)
 
   $('#main-content-author').empty().append(authorLink)

@@ -5,7 +5,8 @@ export const NETWORK = Object.freeze({
 })
 
 export const RPC_NETWORK = Object.freeze({
-  [NETWORK.MAINNET]: 'https://mainnet-rpc.tangerine-network.io',
+  // [NETWORK.MAINNET]: 'https://mainnet-rpc.tangerine-network.io',
+  [NETWORK.MAINNET]: 'wss://mainnet-rpc.tangerine-network.io/ws',
   [NETWORK.TESTNET]: 'https://testnet-rpc.tangerine-network.io',
 })
 
