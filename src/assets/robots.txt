@@ -2,4 +2,4 @@ User-agent: *
 Disallow: /content$
 Disallow: /content.html
 
-Sitemap: https://dett.cc/sitemap.xml
+Sitemap: https://tan.dett.cc/sitemap.xml

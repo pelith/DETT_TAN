@@ -10,9 +10,10 @@
     "dev": "npm run clean && node bin/dev",
     "build": "npm run clean:build && parcel build --no-source-maps src/*.njk --out-dir build/ --public-url /",
     "deploy-prep": "bin/before-deploy.sh",
-    "deploy": "bin/deploy.sh",
+    "deploy": "npm run deploy-prep && bin/deploy.sh && npm run cloudflare-purge-cache",
     "deploy:test": "npm run deploy-prep && test",
-    "deploy:ci": "npm run deploy-prep && ci"
+    "deploy:ci": "npm run deploy-prep && ci",
+    "cloudflare-purge-cache": "cloudflare-purge-cache -e ${CF_EMAIL} -k ${CF_KEY} -z ${CF_ZONE_ID}"
   },
   "license": "MIT",
   "devDependencies": {
@@ -20,7 +21,8 @@
     "@babel/plugin-transform-runtime": "^7.6.0",
     "gh-pages": "^2.1.1",
     "parcel-bundler": "^1.12.3",
-    "sass": "^1.23.0-module.beta.1"
+    "sass": "^1.23.0-module.beta.1",
+    "cloudflare-purge-cache": "^1.1.0",
   },
   "dependencies": {
     "@babel/runtime": "^7.4.4",
