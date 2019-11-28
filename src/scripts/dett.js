@@ -147,6 +147,7 @@ class Dett extends EventEmitter {
   constructor() {
     super()
     this._account = ''
+    this.lock = false
 
     // constant
     this.commentLength = commentLength
@@ -315,12 +316,24 @@ class Dett extends EventEmitter {
     if (tx) {
       const gas = await this.dettBBS.methods.reply(tx, +replyType, content).estimateGas()
       try {
-        await this.dettBBS.methods.reply(tx, +replyType, content).send({ from: this.account, gas: gas, chainId: NETWORKID })
-        .on('confirmation', (confirmationNumber, receipt) => {
-          window.location.reload()
-        })
+        if (!this.lock) {
+          this.lock = true
+          await this.dettBBS.methods.reply(tx, +replyType, content).send({ from: this.account, gas: gas, chainId: NETWORKID })
+            .on('confirmation', (confirmationNumber, receipt) => {
+              window.location.reload()
+              this.lock = false
+            })
+        } else {
+          alert('車速過快，要撞上分隔島了。')
+        }
       } catch(e) {
-        console.log(e)
+        this.lock = false
+        if (e.message.includes('insufficient funds')) {
+          alert('手續費(Gas)不足，準備犁田了。')
+        }
+        else {
+          console.log(e)
+        }
       }
     }
   }
@@ -333,13 +346,24 @@ class Dett extends EventEmitter {
 
     const gas = await this.dettBBS.methods.post(post).estimateGas()
     try {
-      await this.dettBBS.methods.post(post).send({ from: this.account, gas: gas, chainId: NETWORKID })
-      .on('confirmation', (confirmationNumber, receipt) => {
-        window.location = '/'
-      })
-    }
-    catch(err){
-      alert(err)
+      if (!this.lock) {
+        this.lock = true
+        await this.dettBBS.methods.post(post).send({ from: this.account, gas: gas, chainId: NETWORKID })
+          .on('confirmation', (confirmationNumber, receipt) => {
+            window.location = '/'
+            this.lock = false
+          })
+      } else {
+        alert('車速過快，要撞上分隔島了。')
+      }
+    } catch(e) {
+      this.lock = false
+      if (e.message.includes('insufficient funds')) {
+        alert('手續費(Gas)不足，準備犁田了。')
+      }
+      else {
+        console.log(e)
+      }
     }
   }
 
@@ -357,13 +381,24 @@ class Dett extends EventEmitter {
 
     const gas = await this.dettBBS.methods.edit(tx, post).estimateGas()
     try {
-      await this.dettBBS.methods.edit(tx, post).send({ from: this.account, gas: gas, chainId: NETWORKID })
-      .on('confirmation', (confirmationNumber, receipt) => {
-        window.location = '/'
-      })
-    }
-    catch(err){
-      alert(err)
+      if (!this.lock) {
+        this.lock = true
+        await this.dettBBS.methods.edit(tx, post).send({ from: this.account, gas: gas, chainId: NETWORKID })
+          .on('confirmation', (confirmationNumber, receipt) => {
+            window.location = '/'
+            this.lock = false
+          })
+      } else {
+        alert('車速過快，要撞上分隔島了。')
+      }
+    } catch(e) {
+      this.lock = false
+      if (e.message.includes('insufficient funds')) {
+        alert('手續費(Gas)不足，準備犁田了。')
+      }
+      else {
+        console.log(e)
+      }
     }
   }
 

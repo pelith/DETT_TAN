@@ -113,7 +113,7 @@ const getCommentLink = comment => {
 
 const keyboardHook = () => {
   const returnCode = 13, escCode = 27, leftCode = 37, rightCode = 39
-  $(document).keyup((e) => {
+  $(document).keyup(async (e) => {
     if ($(document.body).hasClass('modal-open')) {
       return
     }
@@ -149,7 +149,7 @@ const keyboardHook = () => {
     }
     else if ( isShowReply && !isShowReplyType && e.ctrlKey && e.keyCode == returnCode) {
       if ($("#reply-content").val().length > 0)
-        dett.reply(tx, $("#reply-type").val(), $("#reply-content").val())
+        await dett.reply(tx, $("#reply-type").val(), $("#reply-content").val())         
       else
         hideReply()
     }
