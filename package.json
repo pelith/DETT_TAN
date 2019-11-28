@@ -22,7 +22,7 @@
     "gh-pages": "^2.1.1",
     "parcel-bundler": "^1.12.3",
     "sass": "^1.23.0-module.beta.1",
-    "cloudflare-purge-cache": "^1.1.0",
+    "cloudflare-purge-cache": "^1.1.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.4.4",
