@@ -9,6 +9,7 @@ const perPageLength = 20
 
 let rWeb3 = null
 let rWeb3Provider = null
+let BBSPB = null
 
 class EventEmitter{
   constructor(){
@@ -52,7 +53,6 @@ class PostBase {
       return cache.get(addr)
     }
 
-    const BBSPB = new rWeb3.eth.Contract(ABI.PLAYERBOOK, CONTRACT[NETWORKID].PLAYERBOOK)
     const promise = BBSPB.methods.getPlayer(address).call()
     .then(data => ({
       name: rWeb3.utils.hexToUtf8(data[0]),
@@ -174,9 +174,9 @@ class Dett extends EventEmitter {
     this.BBSCache = new this.rWeb3.eth.Contract(ABI.SHORTLINK, CONTRACT[NETWORKID].SHORTLINK)
 
     rWeb3 = this.rWeb3
+    BBSPB = this.BBSPB
     rWeb3Provider = this.rWeb3Provider
   }
-
 
   initWWeb3Provider(wWeb3Provider) {
     this.wWeb3Provider = wWeb3Provider
@@ -184,6 +184,15 @@ class Dett extends EventEmitter {
 
     this.dettBBS = new this.wWeb3.eth.Contract(ABI.BBS, CONTRACT[NETWORKID].BBS)
     this.dettBBSPB = new this.wWeb3.eth.Contract(ABI.PLAYERBOOK, CONTRACT[NETWORKID].PLAYERBOOK)
+  }
+
+  initCacheWeb3Provider(wWeb3Provider) {
+    this.cWeb3Provider = wWeb3Provider
+    this.cWeb3 = wWeb3Provider.library
+
+    this.BBS = new this.cWeb3.eth.Contract(ABI.BBS, CONTRACT[NETWORKID].BBS)
+    this.BBSPB = new this.cWeb3.eth.Contract(ABI.PLAYERBOOK, CONTRACT[NETWORKID].PLAYERBOOK)
+    this.BBSCache = new this.cWeb3.eth.Contract(ABI.SHORTLINK, CONTRACT[NETWORKID].SHORTLINK)
   }
 
   async getArticles({fromBlock = null, toBlock = null} = {}){
