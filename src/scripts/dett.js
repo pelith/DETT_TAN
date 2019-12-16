@@ -195,6 +195,39 @@ class Dett extends EventEmitter {
     this.BBSCache = new this.cWeb3.eth.Contract(ABI.SHORTLINK, CONTRACT[NETWORKID].SHORTLINK)
   }
 
+  loadPageCache(_page) {
+    const url = window.location.origin
+    return fetch(`${url}/p/${_page}.json`, { method: 'get' }).then(res => {
+      return res.json()
+    }).then((jsonData) => {
+      return jsonData
+    }).catch((error) => {
+      return false
+    })
+  }
+
+  async getCachedArticles(cacheData) {
+    if (!cacheData) return await this.getArticles()
+
+    const articles = await cacheData.map(async (transactionHash) => {
+      const [article, votes, banned] = await Promise.all([
+        this.getArticle(transactionHash, null, false),
+        this.getVotes(transactionHash),
+        this.getBanned(transactionHash),
+      ])
+
+      return [article, votes, banned]
+    })
+
+    return articles
+  }
+
+  async getNewArticles(articleHash) {
+    const transaction = await rWeb3.eth.getTransaction(articleHash)
+    console.log(+transaction.blockNumber+1)
+    return await this.getArticles({ fromBlock: +transaction.blockNumber+1+'' })
+  }
+
   async getArticles({fromBlock = null, toBlock = null} = {}){
     const _fromBlock = fromBlock ? fromBlock.split('-')[0] : FROMBLOCK
     const _toBlock = toBlock ? toBlock.split('-')[0] : 'latest'

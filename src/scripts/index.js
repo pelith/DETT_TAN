@@ -25,60 +25,47 @@ const main = async (_dett) => {
 
   dett = _dett
 
-  let milestones = []
-  // let milestones = await dett.BBSCache.methods.getMilestones().call({ from: dett.defaultCaller })
-  
-  // milestones = milestones.map((milestone) => {
-  //   return dett.cacheweb3.utils.hexToUtf8(milestone)
-  // })
-  
-
   let articles = []
+  let newArticles = []
   let addAnnouncement = true
   const root = dev ? 'index.html' : ''
-  $("#oldpage").attr('href', root+'?p=1')
 
-  if (milestones.length > 0){
-    // get page number
-    const p = getUrlParameter('p')
-    if (p && p.match(/[0-9]+/g) && (1 <= +p && +p <= milestones.length)) {
-      const _p = +p
-      currentPage = _p
-      if (_p === 1) { // first page
-        $("#prevpage").addClass('disabled')
-        $("#nextpage").removeClass('disabled')
-        $("#nextpage").attr('href', root+'?p=2')
-        articles = await dett.getCachedArticles({toBlock: milestones[0], p: p})
-        if (!articles)
-          articles = await dett.getArticles({toBlock: milestones[0]})
-      }
-      else if (_p === milestones.length) { // last page
-        addAnnouncement = true
-        $("#prevpage").attr('href', root+'?p='+(milestones.length-1))
-        articles = await dett.getCachedArticles({fromBlock: milestones[milestones.length-1], p: p})
-        if (!articles)
-          articles = await dett.getArticles({fromBlock: milestones[milestones.length-1]})
-      }
-      else {
-        $("#prevpage").attr('href', root+'?p='+(_p-1))
-        $("#nextpage").removeClass('disabled')
-        $("#nextpage").attr('href', root+'?p='+(_p+1))
-        articles = await dett.getCachedArticles({fromBlock: milestones[_p-1], toBlock: milestones[_p], p: p})
-        if (!articles)
-          articles = await dett.getArticles({fromBlock: milestones[_p-1], toBlock: milestones[_p]})
-      }
-    }
-    else {
-      addAnnouncement = true
-      window.history.replaceState("", "", "/")
-      $("#prevpage").attr('href', root+'?p='+(milestones.length-1))
-      articles = await dett.getCachedArticles({fromBlock: milestones[milestones.length-1], p: p})
+  // get page number
+  const p = getUrlParameter('p')
+
+  const pageCache = p && p.match(/[0-9]+/g) ? await dett.loadPageCache(+p) : await dett.loadPageCache(1)
+  if (!!pageCache && !!pageCache.data) {
+    articles = await dett.getCachedArticles(pageCache.data)
+    if (!p || p === '1') {
+      newArticles = await dett.getNewArticles(pageCache.data[pageCache.data.length-1])
+      articles = articles.concat(newArticles)
     }
   }
-  else { // if no milestones show all article
+  else
+    articles = await dett.getArticles()
+
+  if (!!pageCache) {
+    $("#oldpage").attr('href', root+'?p='+pageCache.total)
+    const _p = +p
+    currentPage = _p
+
+    if (_p === 1 || !_p) { // first page
+      $("#prevpage").addClass('disabled')
+      $("#nextpage").removeClass('disabled')
+      $("#nextpage").attr('href', root+'?p=2')
+    }
+    else if (_p === pageCache.total) { // last page
+      $("#prevpage").attr('href', root+'?p='+(_p-1))
+    }
+    else {
+      $("#prevpage").attr('href', root+'?p='+(_p-1))
+      $("#nextpage").removeClass('disabled')
+      $("#nextpage").attr('href', root+'?p='+(_p+1))
+    }
+  }
+  else { // if no cache show all article
     $("#prevpage").addClass('disabled')
     $("#nextpage").addClass('disabled')
-    articles = await dett.getArticles()
   }
 
   // console.log(articles)
@@ -224,13 +211,9 @@ const directDisplay = (article, votes, banned) => {
 
   if (dev) href = shortURL+'.html'
 
-  // const cacheTime = (Date.now()-article.timestamp)/1000
-  // if (cacheTime < 30) // 30s
-  //  href = 'content.html?tx=' + article.transaction.hash
-  // else if (cacheTime < 30*60) //600-1800s github page cdn time
-  //   href = shortURL+'?new' // tricky skill
-  // console.log(article)
-  href = 'content.html?tx=' + article.transaction.hash
+  const cacheTime = (Date.now()-article.timestamp)/1000
+  if (cacheTime < 30) // 30s
+   href = 'content.html?tx=' + article.transaction.hash
 
   const elem = $('<div class="r-ent"></div>')
   elem.html(
