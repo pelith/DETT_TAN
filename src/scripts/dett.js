@@ -195,15 +195,20 @@ class Dett extends EventEmitter {
     this.BBSCache = new this.cWeb3.eth.Contract(ABI.SHORTLINK, CONTRACT[NETWORKID].SHORTLINK)
   }
 
-  loadPageCache(_page) {
-    const url = window.location.origin
-    return fetch(`${url}/p/${_page}.json`, { method: 'get' }).then(res => {
-      return res.json()
-    }).then((jsonData) => {
-      return jsonData
-    }).catch((error) => {
-      return false
-    })
+  async loadPageCache(_page) {
+    try {
+      const url = window.location.origin
+      const pageInfoResponse = await fetch(`${url}/p/pageInfo.json`, { method: 'get' })
+      const pageInfo = await pageInfoResponse.json()
+
+      const pageCache = pageInfo.pageSize - _page
+      const cacheDataResponse = await fetch(`${url}/p/${pageCache}.json`, { method: 'get' })
+      const cacheData = await cacheDataResponse.json()
+
+      return { pageInfo: pageInfo, cacheData: cacheData }
+    } catch(e) {
+      return { pageInfo: null, cacheData: null }
+    }
   }
 
   async getCachedArticles(cacheData) {
@@ -220,12 +225,6 @@ class Dett extends EventEmitter {
     })
 
     return articles
-  }
-
-  async getNewArticles(articleHash) {
-    const transaction = await rWeb3.eth.getTransaction(articleHash)
-    console.log(+transaction.blockNumber+1)
-    return await this.getArticles({ fromBlock: +transaction.blockNumber+1+'' })
   }
 
   async getArticles({fromBlock = null, toBlock = null} = {}){

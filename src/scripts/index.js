@@ -34,10 +34,10 @@ const main = async (_dett) => {
   const p = getUrlParameter('p')
 
   const pageCache = p && p.match(/[0-9]+/g) ? await dett.loadPageCache(+p) : await dett.loadPageCache(1)
-  if (!!pageCache && !!pageCache.data) {
-    articles = await dett.getCachedArticles(pageCache.data)
+  if (!!pageCache && !!pageCache.pageInfo && !!pageCache.cacheData && !!pageCache.cacheData.length) {
+    articles = await dett.getCachedArticles(pageCache.cacheData)
     if (!p || p === '1') {
-      newArticles = await dett.getNewArticles(pageCache.data[pageCache.data.length-1])
+      newArticles = await dett.getArticles({fromBlock: pageCache.pageInfo.nextHeight+''})
       articles = articles.concat(newArticles)
     }
   }
@@ -45,7 +45,7 @@ const main = async (_dett) => {
     articles = await dett.getArticles()
 
   if (!!pageCache) {
-    $("#oldpage").attr('href', root+'?p='+pageCache.total)
+    $("#oldpage").attr('href', root+'?p='+pageCache.pageInfo.pageSize)
     const _p = +p
     currentPage = _p
 
@@ -54,7 +54,7 @@ const main = async (_dett) => {
       $("#nextpage").removeClass('disabled')
       $("#nextpage").attr('href', root+'?p=2')
     }
-    else if (_p === pageCache.total) { // last page
+    else if (_p === pageCache.pageInfo.pageSize) { // last page
       $("#prevpage").attr('href', root+'?p='+(_p-1))
     }
     else {
