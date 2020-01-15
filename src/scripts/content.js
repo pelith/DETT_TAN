@@ -191,7 +191,7 @@ const renderArticle = (article, isPreRendered) => {
   $('#main-content-href').attr('href', permalink)
   $('#main-content-href').text(permalink)
   $('#main-content-from').text('@'+article.transaction.blockNumber)
-  $('#main-content-from').attr('href', 'https://tangerine.garden/address/tx/'+tx)
+  $('#main-content-from').attr('href', 'https://tangerine.garden/tx/'+tx)
 
 
   for (let timestamp of article.editTimestamps){
