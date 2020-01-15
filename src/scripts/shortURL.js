@@ -5,6 +5,11 @@ class ShortURL {
       str = ShortURL.alphabet.charAt(num % ShortURL.base) + str
       num = Math.floor(num / ShortURL.base)
     }
+
+    if (str.indexOf('0x') == 0) {
+      str = 'x' + str
+    }
+    
     return str
   }
 
