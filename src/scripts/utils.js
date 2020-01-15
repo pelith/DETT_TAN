@@ -157,3 +157,16 @@ export function web3ErrorToString(err) {
     return msg
   }
 }
+
+export function toHex(str) {
+  let hex, i;
+
+  let result = "";
+  for (i=0; i<str.length; i++) {
+      hex = str.charCodeAt(i).toString(16);
+      result += (hex).slice(-4);
+  }
+
+  return '0x'+result
+}
+
